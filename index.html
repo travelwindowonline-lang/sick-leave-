@@ -3,123 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة إصدار التقارير الطبية</title>
+    <title>إصدار التقرير الطبي</title>
     <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background-color: #eef2f5; padding: 10px; font-size: 14px; }
-        .container { background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
-        h2 { text-align: center; color: #0056b3; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background-color: #f4f7f9; padding: 15px; direction: rtl; }
+        .container { background-color: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 850px; margin: auto; }
+        h2 { text-align: center; color: #1D5C96; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .section-title { background: #1D5C96; color: white; padding: 8px 15px; border-radius: 6px; margin: 20px 0 15px 0; font-weight: bold; }
         .row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
         .col { flex: 1; min-width: 200px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #444; }
-        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        input[readonly] { background-color: #f9f9f9; color: #666; }
-        .section-title { background: #0056b3; color: white; padding: 5px 10px; border-radius: 5px; margin-top: 20px; margin-bottom: 10px; }
-        button { width: 100%; padding: 15px; background-color: #28a745; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; font-size: 14px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; }
+        input[readonly] { background-color: #e9ecef; color: #555; }
+        button { width: 100%; padding: 18px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        button:hover { background-color: #218838; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>واجهة تجهيز تقرير الإجازة المرضية</h2>
+    <h2>واجهة تجهيز التقرير (نموذج فارغ)</h2>
 
-    <div class="section-title">البيانات الأساسية والتواريخ</div>
+    <div class="section-title">التواريخ والمدة</div>
     <div class="row">
-        <div class="col"><label>رمز الإجازة (Leave ID):</label><input type="text" id="leaveId" placeholder="GSL..."></div>
-        <div class="col">
-            <label>نوع التواريخ:</label>
-            <select id="dateType">
-                <option value="gregorian">ميلادي</option>
-                <option value="hijri">هجري</option>
-            </select>
-        </div>
+        <div class="col"><label>رمز الإجازة (Leave ID):</label><input type="text" id="leaveId"></div>
+        <div class="col"><label>تاريخ إصدار التقرير:</label><input type="date" id="issueDate"></div>
     </div>
     <div class="row">
-        <div class="col"><label>تاريخ الدخول:</label><input type="date" id="startDate" onchange="calcDate()"></div>
-        <div class="col"><label>مدة الإجازة (بالأيام):</label><input type="number" id="durationDays" value="1" min="1" onchange="calcDate()"></div>
-        <div class="col"><label>تاريخ الخروج (تلقائي):</label><input type="text" id="endDate" readonly></div>
+        <div class="col"><label>تاريخ الدخول:</label><input type="date" id="startDate" oninput="calcDate()"></div>
+        <div class="col"><label>المدة (بالأيام):</label><input type="number" id="durationDays" min="1" oninput="calcDate()"></div>
+        <div class="col"><label>تاريخ الخروج (تلقائي):</label><input type="text" id="endDate" readonly placeholder="سيظهر تلقائياً"></div>
     </div>
 
     <div class="section-title">بيانات المريض</div>
     <div class="row">
         <div class="col"><label>الاسم (عربي):</label><input type="text" id="nameAr"></div>
-        <div class="col"><label>الاسم (إنجليزي - حروف كبيرة تلقائياً):</label><input type="text" id="nameEn" oninput="this.value = this.value.toUpperCase()"></div>
+        <div class="col"><label>الاسم (إنجليزي):</label><input type="text" id="nameEn" oninput="this.value = this.value.toUpperCase()"></div>
     </div>
     <div class="row">
         <div class="col"><label>رقم الهوية / الإقامة:</label><input type="text" id="nationalId"></div>
         <div class="col">
-            <label>الجنسية (عربي):</label>
-            <select id="nationalityAr" onchange="syncData('nationalityAr', 'nationalityEn')">
-                <option value="" data-en="">اختر...</option>
+            <label>الجنسية:</label>
+            <select id="nationalityAr" oninput="syncData('nationalityAr', 'nationalityEn')">
+                <option value="" data-en="" selected>اختر...</option>
                 <option value="السعودية" data-en="Saudi Arabia">السعودية</option>
-                <option value="السورية" data-en="Syrian">السورية</option>
                 <option value="المصرية" data-en="Egyptian">المصرية</option>
+                <option value="السورية" data-en="Syrian">السورية</option>
             </select>
         </div>
-        <div class="col"><label>الجنسية (إنجليزي):</label><input type="text" id="nationalityEn" readonly></div>
+        <div class="col"><label>Nationality (تلقائي):</label><input type="text" id="nationalityEn" readonly placeholder="سيظهر تلقائياً"></div>
     </div>
 
-    <div class="section-title">بيانات العمل والطبيب</div>
+    <div class="section-title">جهة العمل والطبيب</div>
     <div class="row">
         <div class="col"><label>جهة العمل (عربي):</label><input type="text" id="employerAr"></div>
+        <div class="col"><label>Employer (English):</label><input type="text" id="employerEn"></div>
     </div>
     <div class="row">
         <div class="col"><label>اسم الطبيب (عربي):</label><input type="text" id="doctorAr"></div>
-        <div class="col"><label>اسم الطبيب (إنجليزي):</label><input type="text" id="doctorEn" oninput="this.value = this.value.toUpperCase()"></div>
+        <div class="col"><label>Physician Name:</label><input type="text" id="doctorEn" oninput="this.value = this.value.toUpperCase()"></div>
     </div>
     <div class="row">
         <div class="col">
-            <label>المسمى الوظيفي (عربي):</label>
-            <select id="positionAr" onchange="syncData('positionAr', 'positionEn')">
-                <option value="" data-en="">اختر...</option>
+            <label>المسمى الوظيفي:</label>
+            <select id="positionAr" oninput="syncData('positionAr', 'positionEn')">
+                <option value="" data-en="" selected>اختر...</option>
                 <option value="طبيب عام" data-en="General practitioner">طبيب عام</option>
                 <option value="استشاري" data-en="Consultant">استشاري</option>
                 <option value="نائب" data-en="Resident">نائب</option>
-                <option value="نائب اول امراض باطنية" data-en="Senior resident internal medicine">نائب اول امراض باطنية</option>
             </select>
         </div>
-        <div class="col"><label>المسمى الوظيفي (إنجليزي):</label><input type="text" id="positionEn" readonly></div>
+        <div class="col"><label>Position (تلقائي):</label><input type="text" id="positionEn" readonly placeholder="سيظهر تلقائياً"></div>
     </div>
 
-    <div class="section-title">العناصر المتغيرة (الشعارات والباركود)</div>
+    <div class="section-title">المرفقات (الصور والشعارات)</div>
     <div class="row">
-        <div class="col"><label>شعار وزارة الصحة (أعلى التقرير):</label><input type="file" id="imgSeha" accept="image/*"></div>
-        <div class="col"><label>شعار المركز الوطني (أسفل التقرير):</label><input type="file" id="imgNhic" accept="image/*"></div>
+        <div class="col"><label>شعار وزارة الصحة (أعلى اليسار):</label><input type="file" id="imgSeha" accept="image/*"></div>
+        <div class="col"><label>الباركود (أسفل اليسار):</label><input type="file" id="imgBarcode" accept="image/*"></div>
     </div>
     <div class="row">
         <div class="col"><label>شعار المستشفى (أسفل اليمين):</label><input type="file" id="imgHospital" accept="image/*"></div>
-        <div class="col"><label>صورة الباركود (أسفل اليسار):</label><input type="file" id="imgBarcode" accept="image/*"></div>
-    </div>
-    <div class="row">
-        <div class="col"><label>النص أسفل شعار المستشفى:</label><textarea id="hospitalText" rows="2" placeholder="مثال: مستشفى الملك فهد بجدة"></textarea></div>
+        <div class="col"><label>شعار المركز الوطني (أسفل اليمين):</label><input type="file" id="imgNhic" accept="image/*"></div>
     </div>
 
-    <button onclick="generateWord()">تجهيز وإصدار التقرير (Word)</button>
+    <button onclick="generateWord()">إصدار وتحميل التقرير فوراً</button>
 </div>
 
 <script>
+    // التعبئة التلقائية للتواريخ
     function calcDate() {
-        const start = document.getElementById("startDate").value;
-        const days = parseInt(document.getElementById("durationDays").value);
-        if (start && days > 0) {
-            let d = new Date(start);
-            d.setDate(d.getDate() + (days - 1));
-            const type = document.getElementById("dateType").value;
-            if (type === "hijri") {
-                document.getElementById("endDate").value = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {day: 'numeric', month: 'numeric', year: 'numeric'}).format(d);
-            } else {
+        const startVal = document.getElementById("startDate").value;
+        const daysVal = document.getElementById("durationDays").value;
+        if (startVal && daysVal) {
+            const days = parseInt(daysVal);
+            if (!isNaN(days) && days > 0) {
+                let d = new Date(startVal);
+                d.setDate(d.getDate() + (days - 1));
                 document.getElementById("endDate").value = d.toISOString().split('T')[0];
+                return;
             }
+        }
+        document.getElementById("endDate").value = "";
+    }
+
+    // التعبئة التلقائية للغة الإنجليزية
+    function syncData(arId, enId) {
+        const sel = document.getElementById(arId);
+        const selectedOpt = sel.options[sel.selectedIndex];
+        if(selectedOpt) {
+            document.getElementById(enId).value = selectedOpt.getAttribute('data-en') || "";
         }
     }
 
-    function syncData(arId, enId) {
-        const sel = document.getElementById(arId);
-        document.getElementById(enId).value = sel.options[sel.selectedIndex].getAttribute('data-en');
-    }
-
+    // قراءة الصور بأمان
     function readFile(id) {
         return new Promise((resolve) => {
             const file = document.getElementById(id).files[0];
@@ -130,172 +128,175 @@
         });
     }
 
-    function createCell(text, align, bgColor, textColor, font) {
+    // إنشاء خلايا الجدول
+    function createCell(text, align, bgColor, textColor, isLabel) {
         return new docx.TableCell({
-            shading: bgColor ? { fill: bgColor } : undefined,
-            margins: { top: 150, bottom: 150, left: 150, right: 150 },
+            shading: { fill: bgColor },
+            margins: { top: 120, bottom: 120, left: 100, right: 100 },
             verticalAlign: docx.VerticalAlign.CENTER,
             children: [
                 new docx.Paragraph({
-                    alignment: align === 'center' ? docx.AlignmentType.CENTER : (align === 'right' ? docx.AlignmentType.RIGHT : docx.AlignmentType.LEFT),
-                    children: [
-                        new docx.TextRun({ text: text || "-", color: textColor || "1D5C96", bold: true, font: font || "Noto Sans Arabic", size: 20 })
-                    ]
+                    alignment: align,
+                    children: [ new docx.TextRun({ text: text || "-", color: textColor, bold: true, size: 22, font: isLabel ? "Arial" : "Sakkal Majalla" }) ]
                 })
             ]
         });
     }
 
-    function createRow(lblEn, valEn, valAr, lblAr, isDarkRow) {
-        const bgColor = isDarkRow ? "1D5C96" : "FFFFFF";
-        const txtColor = isDarkRow ? "FFFFFF" : "1D5C96";
-        const valColor = isDarkRow ? "FFFFFF" : "000000";
-
-        const cells = [];
-        cells.push(createCell(lblEn, 'left', bgColor, txtColor, "Neirizi"));
-
-        if (valEn === valAr) {
-            cells.push(new docx.TableCell({
-                columnSpan: 2,
-                shading: { fill: bgColor },
-                margins: { top: 150, bottom: 150 },
-                verticalAlign: docx.VerticalAlign.CENTER,
-                children: [ new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [ new docx.TextRun({ text: valEn || "-", color: valColor, bold: true, font: "Noto Sans Arabic", size: 20 }) ] }) ]
-            }));
-        } else {
-            cells.push(createCell(valEn, 'center', bgColor, valColor, "Neirizi"));
-            cells.push(createCell(valAr, 'center', bgColor, valColor, "Noto Sans Arabic"));
-        }
-
-        cells.push(createCell(lblAr, 'right', bgColor, txtColor, "Noto Sans Arabic"));
-
-        return new docx.TableRow({ children: cells });
-    }
-
-    async function generateWord() {
-        // رسالة التنبيه التي طلبتها للطمأنة ببدء عملية التحميل
-        alert("سيتم تجهيز وتحميل الملف الآن، يرجى الانتظار ثواني قليلة...");
-
-        const v = {
-            id: document.getElementById("leaveId").value,
-            dur: document.getElementById("durationDays").value,
-            st: document.getElementById("startDate").value,
-            en: document.getElementById("endDate").value,
-            nAr: document.getElementById("nameAr").value,
-            nEn: document.getElementById("nameEn").value,
-            natId: document.getElementById("nationalId").value,
-            natAr: document.getElementById("nationalityAr").value,
-            natEn: document.getElementById("nationalityEn").value,
-            emp: document.getElementById("employerAr").value,
-            docAr: document.getElementById("doctorAr").value,
-            docEn: document.getElementById("doctorEn").value,
-            posAr: document.getElementById("positionAr").value,
-            posEn: document.getElementById("positionEn").value,
-            hText: document.getElementById("hospitalText").value
-        };
-
-        // قراءة جميع الصور المرفوعة من قبل المستخدم
-        const imgSeha = await readFile("imgSeha");
-        const imgNhic = await readFile("imgNhic");
-        const imgHospital = await readFile("imgHospital");
-        const imgBarcode = await readFile("imgBarcode");
-
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }); 
-        const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
-        const borderStyle = { style: docx.BorderStyle.SINGLE, size: 2, color: "1D5C96" };
-
-        const doc = new docx.Document({
-            sections: [{
-                properties: {},
-                // ترويسة الصفحة (شعار وزارة الصحة يتم وضعه هنا إذا تم رفعه)
-                headers: {
-                    default: new docx.Header({
-                        children: [
-                            new docx.Paragraph({
-                                children: imgSeha ? [
-                                    new docx.ImageRun({
-                                        data: imgSeha,
-                                        transformation: { width: 100, height: 40 }
-                                    })
-                                ] : [new docx.TextRun("")]
-                            })
-                        ]
-                    })
-                },
-                children: [
-                    new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "تقرير إجازة مرضية", bold: true, size: 40, font: "Noto Sans Arabic", color: "1D5C96" })] }),
-                    new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "Sick Leave Report", bold: true, size: 32, font: "Neirizi", color: "1D5C96" })] }),
-                    new docx.Paragraph({ text: "" }), 
-
-                    new docx.Table({
-                        width: { size: 100, type: docx.WidthType.PERCENTAGE },
-                        borders: { top: borderStyle, bottom: borderStyle, left: borderStyle, right: borderStyle, insideHorizontal: borderStyle, insideVertical: borderStyle },
-                        rows: [
-                            createRow("Leave ID", v.id, v.id, "رمز الإجازة", false),
-                            createRow("Leave Duration", `${v.dur} day(s) (${v.st} to ${v.en})`, `${v.dur} يوم (${v.st} الى ${v.en})`, "مدة الإجازة", true),
-                            createRow("Admission Date", v.st, v.st, "تاريخ الدخول", false),
-                            createRow("Discharge Date", v.en, v.en, "تاريخ الخروج", false),
-                            createRow("Issue Date", now.toISOString().split('T')[0], now.toISOString().split('T')[0], "تاريخ اصدار التقرير", false),
-                            createRow("Name", v.nEn, v.nAr, "الاسم", false),
-                            createRow("National ID/Iqama", v.natId, v.natId, "رقم الهوية / الإقامة", false),
-                            createRow("Nationality", v.natEn, v.natAr, "الجنسية", false),
-                            createRow("Employer", "-", v.emp, "جهة العمل", false),
-                            createRow("Physician Name", v.docEn, v.docAr, "اسم الطبيب المعالج", false),
-                            createRow("Position", v.posEn, v.posAr, "المسمى الوظيفي", false)
-                        ]
-                    }),
-
-                    new docx.Paragraph({ text: "" }),
-                    new docx.Paragraph({ text: "" }),
-
-                    new docx.Table({
-                        width: { size: 100, type: docx.WidthType.PERCENTAGE },
-                        borders: { top: {style:"none"}, bottom: {style:"none"}, left: {style:"none"}, right: {style:"none"}, insideVertical: {style:"none"}, insideHorizontal: {style:"none"} },
-                        rows: [
-                            new docx.TableRow({
-                                children: [
-                                    new docx.TableCell({
-                                        width: { size: 50, type: docx.WidthType.PERCENTAGE },
-                                        children: [
-                                            new docx.Paragraph({
-                                                children: imgBarcode ? [new docx.ImageRun({ data: imgBarcode, transformation: { width: 100, height: 100 } })] : []
-                                            }),
-                                            new docx.Paragraph({ children: [new docx.TextRun({ text: "للتحقق من بيانات التقرير يرجى التأكد من زيارة موقع منصة صحة الرسمي", bold: true, font: "Noto Sans Arabic", size: 14 })] }),
-                                            new docx.Paragraph({ children: [new docx.TextRun({ text: "To check the report please visit Seha's official website", bold: true, font: "Neirizi", size: 14 })] }),
-                                            new docx.Paragraph({ children: [new docx.TextRun({ text: "www.seha.sa/#/inquiries/slenquiry", color: "0000FF", underline: {}, font: "Neirizi", bold: true, size: 16 })] }),
-                                            new docx.Paragraph({ text: "" }),
-                                            new docx.Paragraph({ children: [new docx.TextRun({ text: timeStr, bold: true, font: "Neirizi", size: 20 })] }),
-                                            new docx.Paragraph({ children: [new docx.TextRun({ text: dateStr, bold: true, font: "Neirizi", size: 20 })] })
-                                        ]
-                                    }),
-                                    new docx.TableCell({
-                                        width: { size: 50, type: docx.WidthType.PERCENTAGE },
-                                        children: [
-                                            new docx.Paragraph({
-                                                alignment: docx.AlignmentType.RIGHT,
-                                                children: imgHospital ? [new docx.ImageRun({ data: imgHospital, transformation: { width: 120, height: 80 } })] : []
-                                            }),
-                                            new docx.Paragraph({ alignment: docx.AlignmentType.RIGHT, children: [new docx.TextRun({ text: v.hText, bold: true, font: "Noto Sans Arabic", size: 18 })] }),
-                                            new docx.Paragraph({ text: "" }),
-                                            new docx.Paragraph({ text: "" }),
-                                            // شعار المركز الوطني يتم وضعه هنا إذا تم رفعه
-                                            new docx.Paragraph({
-                                                alignment: docx.AlignmentType.RIGHT,
-                                                children: imgNhic ? [new docx.ImageRun({ data: imgNhic, transformation: { width: 100, height: 50 } })] : []
-                                            })
-                                        ]
-                                    })
-                                ]
-                            })
-                        ]
-                    })
-                ]
-            }]
+    // صف مدمج
+    function createMergedRow(lblEn, val, lblAr) {
+        return new docx.TableRow({
+            children: [
+                createCell(lblEn, docx.AlignmentType.RIGHT, "FFFFFF", "1D5C96", true),
+                new docx.TableCell({
+                    columnSpan: 2, shading: { fill: "FFFFFF" }, verticalAlign: docx.VerticalAlign.CENTER,
+                    children: [ new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [ new docx.TextRun({ text: val || "-", color: "000000", bold: true, size: 24 }) ] }) ]
+                }),
+                createCell(lblAr, docx.AlignmentType.RIGHT, "FFFFFF", "1D5C96", true)
+            ]
         });
-
-        docx.Packer.toBlob(doc).then((blob) => {
-            saveAs(blob, "Sick_Leave_Report.docx");
-        }).catch(e => alert("حدث خطأ أثناء حفظ الملف: " + e.message));
     }
+
+    // صف مقسوم (لغتين)
+    function createSplitRow(lblEn, valEn, valAr, lblAr, isDark) {
+        const bg = isDark ? "1D5C96" : "FFFFFF";
+        const txt = isDark ? "FFFFFF" : "1D5C96";
+        const valTxt = isDark ? "FFFFFF" : "000000";
+        return new docx.TableRow({
+            children: [
+                createCell(lblEn, docx.AlignmentType.RIGHT, bg, txt, true),
+                createCell(valEn, docx.AlignmentType.CENTER, bg, valTxt),
+                createCell(valAr, docx.AlignmentType.CENTER, bg, valTxt),
+                createCell(lblAr, docx.AlignmentType.RIGHT, bg, txt, true)
+            ]
+        });
+    }
+
+    // دالة إنشاء الوورد الأساسية
+    async function generateWord() {
+        alert("جاري تجهيز الملف.. اضغط OK وسيتم التحميل فوراً.");
+        
+        try {
+            const v = {
+                id: document.getElementById("leaveId").value,
+                dur: document.getElementById("durationDays").value,
+                st: document.getElementById("startDate").value,
+                en: document.getElementById("endDate").value,
+                iss: document.getElementById("issueDate").value,
+                nAr: document.getElementById("nameAr").value,
+                nEn: document.getElementById("nameEn").value,
+                natId: document.getElementById("nationalId").value,
+                natAr: document.getElementById("nationalityAr").value,
+                natEn: document.getElementById("nationalityEn").value,
+                empAr: document.getElementById("employerAr").value,
+                empEn: document.getElementById("employerEn").value,
+                docAr: document.getElementById("doctorAr").value,
+                docEn: document.getElementById("doctorEn").value,
+                posAr: document.getElementById("positionAr").value,
+                posEn: document.getElementById("positionEn").value
+            };
+
+            const imgSeha = await readFile("imgSeha");
+            const imgBarcode = await readFile("imgBarcode");
+            const imgHospital = await readFile("imgHospital");
+            const imgNhic = await readFile("imgNhic");
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }); 
+            const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+            const borderStyle = { style: docx.BorderStyle.SINGLE, size: 2, color: "1D5C96" };
+
+            let durationTextEn = "-";
+            let durationTextAr = "-";
+            if (v.dur && v.st && v.en) {
+                durationTextEn = `${v.dur} day(s) (${v.st} to ${v.en})`;
+                durationTextAr = `يوم (${v.dur}) ${v.st} الى ${v.en}`;
+            }
+
+            const doc = new docx.Document({
+                sections: [{
+                    properties: {},
+                    headers: {
+                        default: new docx.Header({
+                            children: [
+                                new docx.Paragraph({
+                                    children: imgSeha ? [new docx.ImageRun({ data: imgSeha, transformation: { width: 120, height: 45 } })] : [new docx.TextRun("")]
+                                })
+                            ]
+                        })
+                    },
+                    children: [
+                        new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "تقرير إجازة مرضية", bold: true, size: 44, color: "1D5C96" })] }),
+                        new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "Sick Leave Report", bold: true, size: 36, color: "1D5C96" })] }),
+                        new docx.Paragraph({ text: "" }), 
+
+                        new docx.Table({
+                            width: { size: 100, type: docx.WidthType.PERCENTAGE },
+                            borders: { top: borderStyle, bottom: borderStyle, left: borderStyle, right: borderStyle, insideHorizontal: borderStyle, insideVertical: borderStyle },
+                            rows: [
+                                createMergedRow("Leave ID", v.id, "رمز الإجازة"),
+                                createSplitRow("Leave Duration", durationTextEn, durationTextAr, "مدة الإجازة", true),
+                                createMergedRow("Admission Date", v.st, "تاريخ الدخول"),
+                                createMergedRow("Discharge Date", v.en, "تاريخ الخروج"),
+                                createMergedRow("Issue Date", v.iss, "تاريخ اصدار التقرير"),
+                                createSplitRow("Name", v.nEn, v.nAr, "الاسم"),
+                                createMergedRow("National ID/Iqama", v.natId, "رقم الهوية / الإقامة"),
+                                createSplitRow("Nationality", v.natEn, v.natAr, "الجنسية"),
+                                createSplitRow("Employer", v.empEn, v.empAr, "جهة العمل"),
+                                createSplitRow("Physician Name", v.docEn, v.docAr, "اسم الطبيب المعالج"),
+                                createSplitRow("Position", v.posEn, v.posAr, "المسمى الوظيفي")
+                            ]
+                        }),
+
+                        new docx.Paragraph({ text: "" }),
+                        new docx.Paragraph({ text: "" }),
+
+                        new docx.Table({
+                            width: { size: 100, type: docx.WidthType.PERCENTAGE },
+                            borders: { top: {style:"none"}, bottom: {style:"none"}, left: {style:"none"}, right: {style:"none"}, insideVertical: {style:"none"}, insideHorizontal: {style:"none"} },
+                            rows: [
+                                new docx.TableRow({
+                                    children: [
+                                        new docx.TableCell({
+                                            width: { size: 60, type: docx.WidthType.PERCENTAGE },
+                                            children: [
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: imgBarcode ? [new docx.ImageRun({ data: imgBarcode, transformation: { width: 80, height: 80 } })] : [new docx.TextRun("")] }),
+                                                new docx.Paragraph({ text: "" }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "للتحقق من بيانات التقرير يرجى التأكد من زيارة موقع منصة صحة الرسمي", bold: true, size: 14 })] }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "To check the report please visit Seha's official website", bold: true, size: 14 })] }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "www.seha.sa/#/inquiries/slenquiry", color: "0000FF", underline: {}, bold: true, size: 16 })] }),
+                                                new docx.Paragraph({ text: "" }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: timeStr, bold: true, size: 24 })] }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: dateStr, bold: true, size: 24 })] })
+                                            ]
+                                        }),
+                                        new docx.TableCell({
+                                            width: { size: 40, type: docx.WidthType.PERCENTAGE },
+                                            verticalAlign: docx.VerticalAlign.TOP,
+                                            children: [
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: imgHospital ? [new docx.ImageRun({ data: imgHospital, transformation: { width: 100, height: 60 } })] : [new docx.TextRun("")] }),
+                                                new docx.Paragraph({ text: "" }),
+                                                new docx.Paragraph({ text: "" }),
+                                                new docx.Paragraph({ text: "" }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: imgNhic ? [new docx.ImageRun({ data: imgNhic, transformation: { width: 130, height: 50 } })] : [new docx.TextRun("")] })
+                                            ]
+                                        })
+                                    ]
+                                })
+                            ]
+                        })
+                    ]
+                }]
+            });
+
+            docx.Packer.toBlob(doc).then((blob) => {
+                saveAs(blob, "Sick_Leave_Report.docx");
+            }).catch(e => alert("حدث خطأ في تجهيز الملف: " + e.message));
+        } catch (error) {
+            alert("حدث خطأ غير متوقع: " + error.message);
+        }
+    }
+</script>
+</body>
+</html>
