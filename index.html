@@ -8,14 +8,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background-color: #f4f7f9; padding: 15px; direction: rtl; }
+        body { font-family: 'Arial', Tahoma, sans-serif; background-color: #f4f7f9; padding: 15px; direction: rtl; }
         .container { background-color: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 850px; margin: auto; }
-        h2 { text-align: center; color: #1D5C96; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h2 { text-align: center; color: #1D5C96; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; font-weight: bold; }
         .section-title { background: #1D5C96; color: white; padding: 8px 15px; border-radius: 6px; margin: 20px 0 15px 0; font-weight: bold; }
         .row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
         .col { flex: 1; min-width: 200px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; font-size: 14px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-family: 'Arial'; }
         input[readonly] { background-color: #e9ecef; color: #555; }
         button { width: 100%; padding: 18px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
         button:hover { background-color: #218838; }
@@ -24,7 +24,7 @@
 <body>
 
 <div class="container">
-    <h2>واجهة تجهيز التقرير (نموذج فارغ)</h2>
+    <h2>واجهة تجهيز التقرير (المطابق لملف PDF)</h2>
 
     <div class="section-title">التواريخ والمدة</div>
     <div class="row">
@@ -34,7 +34,7 @@
     <div class="row">
         <div class="col"><label>تاريخ الدخول:</label><input type="date" id="startDate" oninput="calcDate()"></div>
         <div class="col"><label>المدة (بالأيام):</label><input type="number" id="durationDays" min="1" oninput="calcDate()"></div>
-        <div class="col"><label>تاريخ الخروج (تلقائي):</label><input type="text" id="endDate" readonly placeholder="سيظهر تلقائياً"></div>
+        <div class="col"><label>تاريخ الخروج (تلقائي):</label><input type="text" id="endDate" readonly></div>
     </div>
 
     <div class="section-title">بيانات المريض</div>
@@ -53,46 +53,53 @@
                 <option value="السورية" data-en="Syrian">السورية</option>
             </select>
         </div>
-        <div class="col"><label>Nationality (تلقائي):</label><input type="text" id="nationalityEn" readonly placeholder="سيظهر تلقائياً"></div>
+        <div class="col"><label>Nationality:</label><input type="text" id="nationalityEn" readonly></div>
     </div>
 
-    <div class="section-title">جهة العمل والطبيب</div>
+    <div class="section-title">جهة العمل والممارس (حسب التحديث الجديد)</div>
     <div class="row">
         <div class="col"><label>جهة العمل (عربي):</label><input type="text" id="employerAr"></div>
         <div class="col"><label>Employer (English):</label><input type="text" id="employerEn"></div>
     </div>
     <div class="row">
-        <div class="col"><label>اسم الطبيب (عربي):</label><input type="text" id="doctorAr"></div>
-        <div class="col"><label>Physician Name:</label><input type="text" id="doctorEn" oninput="this.value = this.value.toUpperCase()"></div>
+        <div class="col"><label>اسم الممارس (عربي):</label><input type="text" id="doctorAr"></div>
+        <div class="col"><label>Practitioner Name:</label><input type="text" id="doctorEn" oninput="this.value = this.value.toUpperCase()"></div>
     </div>
     <div class="row">
         <div class="col">
             <label>المسمى الوظيفي:</label>
             <select id="positionAr" oninput="syncData('positionAr', 'positionEn')">
                 <option value="" data-en="" selected>اختر...</option>
-                <option value="طبيب عام" data-en="General practitioner">طبيب عام</option>
+                <option value="طبيب عام" data-en="General">طبيب عام</option>
                 <option value="استشاري" data-en="Consultant">استشاري</option>
+                <option value="أخصائي" data-en="Specialist">أخصائي</option>
                 <option value="نائب" data-en="Resident">نائب</option>
             </select>
         </div>
-        <div class="col"><label>Position (تلقائي):</label><input type="text" id="positionEn" readonly placeholder="سيظهر تلقائياً"></div>
+        <div class="col"><label>Position:</label><input type="text" id="positionEn" readonly></div>
     </div>
 
-    <div class="section-title">المرفقات (الصور والشعارات)</div>
+    <div class="section-title">المرفقات وبيانات المستشفى</div>
     <div class="row">
         <div class="col"><label>شعار وزارة الصحة (أعلى اليسار):</label><input type="file" id="imgSeha" accept="image/*"></div>
         <div class="col"><label>الباركود (أسفل اليسار):</label><input type="file" id="imgBarcode" accept="image/*"></div>
     </div>
     <div class="row">
         <div class="col"><label>شعار المستشفى (أسفل اليمين):</label><input type="file" id="imgHospital" accept="image/*"></div>
-        <div class="col"><label>شعار المركز الوطني (أسفل اليمين):</label><input type="file" id="imgNhic" accept="image/*"></div>
+        <div class="col"><label>شعار المركز الوطني (أسفل اليمين جداً):</label><input type="file" id="imgNhic" accept="image/*"></div>
+    </div>
+    <div class="row">
+        <div class="col"><label>اسم المستشفى (عربي):</label><input type="text" id="hospNameAr" placeholder="مثال: مجمع عيادات بسمة النرجس الطبي"></div>
+        <div class="col"><label>اسم المستشفى (إنجليزي):</label><input type="text" id="hospNameEn" placeholder="مثال: Basma Al Narges Medical Complex"></div>
+    </div>
+    <div class="row">
+        <div class="col"><label>رقم الترخيص (License No):</label><input type="text" id="hospLicense" placeholder="مثال: 1410101201210111"></div>
     </div>
 
     <button onclick="generateWord()">إصدار وتحميل التقرير فوراً</button>
 </div>
 
 <script>
-    // التعبئة التلقائية للتواريخ
     function calcDate() {
         const startVal = document.getElementById("startDate").value;
         const daysVal = document.getElementById("durationDays").value;
@@ -108,7 +115,6 @@
         document.getElementById("endDate").value = "";
     }
 
-    // التعبئة التلقائية للغة الإنجليزية
     function syncData(arId, enId) {
         const sel = document.getElementById(arId);
         const selectedOpt = sel.options[sel.selectedIndex];
@@ -117,7 +123,6 @@
         }
     }
 
-    // قراءة الصور بأمان
     function readFile(id) {
         return new Promise((resolve) => {
             const file = document.getElementById(id).files[0];
@@ -128,8 +133,17 @@
         });
     }
 
-    // إنشاء خلايا الجدول
-    function createCell(text, align, bgColor, textColor, isLabel) {
+    // عكس التواريخ لتظهر بالشكل DD-MM-YYYY كما في التقرير الأصلي
+    function formatDateToSaudi(dateStr) {
+        if (!dateStr) return "-";
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+        return dateStr;
+    }
+
+    function createCell(text, align, bgColor, textColor) {
         return new docx.TableCell({
             shading: { fill: bgColor },
             margins: { top: 120, bottom: 120, left: 100, right: 100 },
@@ -137,52 +151,49 @@
             children: [
                 new docx.Paragraph({
                     alignment: align,
-                    children: [ new docx.TextRun({ text: text || "-", color: textColor, bold: true, size: 22, font: isLabel ? "Arial" : "Sakkal Majalla" }) ]
+                    children: [ new docx.TextRun({ text: text || "-", color: textColor, bold: true, size: 24, font: "Arial" }) ]
                 })
             ]
         });
     }
 
-    // صف مدمج
     function createMergedRow(lblEn, val, lblAr) {
         return new docx.TableRow({
             children: [
-                createCell(lblEn, docx.AlignmentType.RIGHT, "FFFFFF", "1D5C96", true),
+                createCell(lblEn, docx.AlignmentType.LEFT, "FFFFFF", "1D5C96"),
                 new docx.TableCell({
                     columnSpan: 2, shading: { fill: "FFFFFF" }, verticalAlign: docx.VerticalAlign.CENTER,
-                    children: [ new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [ new docx.TextRun({ text: val || "-", color: "000000", bold: true, size: 24 }) ] }) ]
+                    children: [ new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [ new docx.TextRun({ text: val || "-", color: "000000", bold: true, size: 24, font: "Arial" }) ] }) ]
                 }),
-                createCell(lblAr, docx.AlignmentType.RIGHT, "FFFFFF", "1D5C96", true)
+                createCell(lblAr, docx.AlignmentType.RIGHT, "FFFFFF", "1D5C96")
             ]
         });
     }
 
-    // صف مقسوم (لغتين)
-    function createSplitRow(lblEn, valEn, valAr, lblAr, isDark) {
+    function createSplitRow(lblEn, valEn, valAr, lblAr, isDark = false) {
         const bg = isDark ? "1D5C96" : "FFFFFF";
         const txt = isDark ? "FFFFFF" : "1D5C96";
         const valTxt = isDark ? "FFFFFF" : "000000";
         return new docx.TableRow({
             children: [
-                createCell(lblEn, docx.AlignmentType.RIGHT, bg, txt, true),
+                createCell(lblEn, docx.AlignmentType.LEFT, bg, txt),
                 createCell(valEn, docx.AlignmentType.CENTER, bg, valTxt),
                 createCell(valAr, docx.AlignmentType.CENTER, bg, valTxt),
-                createCell(lblAr, docx.AlignmentType.RIGHT, bg, txt, true)
+                createCell(lblAr, docx.AlignmentType.RIGHT, bg, txt)
             ]
         });
     }
 
-    // دالة إنشاء الوورد الأساسية
     async function generateWord() {
-        alert("جاري تجهيز الملف.. اضغط OK وسيتم التحميل فوراً.");
+        alert("جاري تجهيز الملف بالشكل المطابق لنسخة PDF.. اضغط OK ليبدأ التحميل.");
         
         try {
             const v = {
                 id: document.getElementById("leaveId").value,
                 dur: document.getElementById("durationDays").value,
-                st: document.getElementById("startDate").value,
-                en: document.getElementById("endDate").value,
-                iss: document.getElementById("issueDate").value,
+                st: formatDateToSaudi(document.getElementById("startDate").value),
+                en: formatDateToSaudi(document.getElementById("endDate").value),
+                iss: formatDateToSaudi(document.getElementById("issueDate").value),
                 nAr: document.getElementById("nameAr").value,
                 nEn: document.getElementById("nameEn").value,
                 natId: document.getElementById("nationalId").value,
@@ -193,17 +204,20 @@
                 docAr: document.getElementById("doctorAr").value,
                 docEn: document.getElementById("doctorEn").value,
                 posAr: document.getElementById("positionAr").value,
-                posEn: document.getElementById("positionEn").value
+                posEn: document.getElementById("positionEn").value,
+                hNameAr: document.getElementById("hospNameAr").value,
+                hNameEn: document.getElementById("hospNameEn").value,
+                hLic: document.getElementById("hospLicense").value
             };
 
-            const imgSeha = await readFile("imgSeha");
-            const imgBarcode = await readFile("imgBarcode");
-            const imgHospital = await readFile("imgHospital");
             const imgNhic = await readFile("imgNhic");
+            const imgHospital = await readFile("imgHospital");
+            const imgBarcode = await readFile("imgBarcode");
+            const imgSeha = await readFile("imgSeha");
 
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }); 
-            const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }); 
+            const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
             const borderStyle = { style: docx.BorderStyle.SINGLE, size: 2, color: "1D5C96" };
 
@@ -211,7 +225,7 @@
             let durationTextAr = "-";
             if (v.dur && v.st && v.en) {
                 durationTextEn = `${v.dur} day(s) (${v.st} to ${v.en})`;
-                durationTextAr = `يوم (${v.dur}) ${v.st} الى ${v.en}`;
+                durationTextAr = `${v.st} ${v.en} يوم ${v.dur}`;
             }
 
             const doc = new docx.Document({
@@ -221,14 +235,15 @@
                         default: new docx.Header({
                             children: [
                                 new docx.Paragraph({
-                                    children: imgSeha ? [new docx.ImageRun({ data: imgSeha, transformation: { width: 120, height: 45 } })] : [new docx.TextRun("")]
+                                    alignment: docx.AlignmentType.LEFT,
+                                    children: imgSeha ? [new docx.ImageRun({ data: imgSeha, transformation: { width: 140, height: 50 } })] : []
                                 })
                             ]
                         })
                     },
                     children: [
-                        new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "تقرير إجازة مرضية", bold: true, size: 44, color: "1D5C96" })] }),
-                        new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "Sick Leave Report", bold: true, size: 36, color: "1D5C96" })] }),
+                        new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "تقرير إجازة مرضية", bold: true, size: 44, color: "1D5C96", font: "Arial" })] }),
+                        new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "Sick Leave Report", bold: true, size: 36, color: "1D5C96", font: "Arial" })] }),
                         new docx.Paragraph({ text: "" }), 
 
                         new docx.Table({
@@ -239,16 +254,23 @@
                                 createSplitRow("Leave Duration", durationTextEn, durationTextAr, "مدة الإجازة", true),
                                 createMergedRow("Admission Date", v.st, "تاريخ الدخول"),
                                 createMergedRow("Discharge Date", v.en, "تاريخ الخروج"),
-                                createMergedRow("Issue Date", v.iss, "تاريخ اصدار التقرير"),
+                                createMergedRow("Issue Date", v.iss, "تاريخ إصدار التقرير"),
                                 createSplitRow("Name", v.nEn, v.nAr, "الاسم"),
                                 createMergedRow("National ID/Iqama", v.natId, "رقم الهوية / الإقامة"),
                                 createSplitRow("Nationality", v.natEn, v.natAr, "الجنسية"),
-                                createSplitRow("Employer", v.empEn, v.empAr, "جهة العمل"),
-                                createSplitRow("Physician Name", v.docEn, v.docAr, "اسم الطبيب المعالج"),
+                                createSplitRow("Employer", v.empEn || "-", v.empAr || "-", "جهة العمل"),
+                                createSplitRow("Practitioner Name", v.docEn, v.docAr, "اسم الممارس"),
                                 createSplitRow("Position", v.posEn, v.posAr, "المسمى الوظيفي")
                             ]
                         }),
 
+                        new docx.Paragraph({ text: "" }),
+                        
+                        // قسم بيانات المستشفى أسفل الجدول مباشرة كما في النموذج
+                        new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: v.hNameAr, bold: true, size: 24, font: "Arial" })] }),
+                        new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: v.hNameEn, bold: true, size: 24, font: "Arial" })] }),
+                        new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: (v.hLic ? v.hLic + " : رقم الترخيص" : ""), bold: true, size: 24, font: "Arial" })] }),
+                        
                         new docx.Paragraph({ text: "" }),
                         new docx.Paragraph({ text: "" }),
 
@@ -260,26 +282,26 @@
                                     children: [
                                         new docx.TableCell({
                                             width: { size: 60, type: docx.WidthType.PERCENTAGE },
+                                            verticalAlign: docx.VerticalAlign.TOP,
                                             children: [
-                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: imgBarcode ? [new docx.ImageRun({ data: imgBarcode, transformation: { width: 80, height: 80 } })] : [new docx.TextRun("")] }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: imgBarcode ? [new docx.ImageRun({ data: imgBarcode, transformation: { width: 90, height: 90 } })] : [] }),
                                                 new docx.Paragraph({ text: "" }),
-                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "للتحقق من بيانات التقرير يرجى التأكد من زيارة موقع منصة صحة الرسمي", bold: true, size: 14 })] }),
-                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "To check the report please visit Seha's official website", bold: true, size: 14 })] }),
-                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "www.seha.sa/#/inquiries/slenquiry", color: "0000FF", underline: {}, bold: true, size: 16 })] }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "للتحقق من بيانات التقرير يرجى التأكد من زيارة موقع منصة صحة الرسمي", bold: true, size: 16, font: "Arial" })] }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "To check the report please visit Seha's offical website", bold: true, size: 16, font: "Arial" })] }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: "www.seha.sa/#/inquiries/slenquiry", color: "0000FF", underline: {}, bold: true, size: 18, font: "Arial" })] }),
                                                 new docx.Paragraph({ text: "" }),
-                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: timeStr, bold: true, size: 24 })] }),
-                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: dateStr, bold: true, size: 24 })] })
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: timeStr, bold: true, size: 24, font: "Arial" })] }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: [new docx.TextRun({ text: dateStr, bold: true, size: 24, font: "Arial" })] })
                                             ]
                                         }),
                                         new docx.TableCell({
                                             width: { size: 40, type: docx.WidthType.PERCENTAGE },
-                                            verticalAlign: docx.VerticalAlign.TOP,
+                                            verticalAlign: docx.VerticalAlign.BOTTOM,
                                             children: [
-                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: imgHospital ? [new docx.ImageRun({ data: imgHospital, transformation: { width: 100, height: 60 } })] : [new docx.TextRun("")] }),
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: imgHospital ? [new docx.ImageRun({ data: imgHospital, transformation: { width: 120, height: 70 } })] : [] }),
                                                 new docx.Paragraph({ text: "" }),
                                                 new docx.Paragraph({ text: "" }),
-                                                new docx.Paragraph({ text: "" }),
-                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: imgNhic ? [new docx.ImageRun({ data: imgNhic, transformation: { width: 130, height: 50 } })] : [new docx.TextRun("")] })
+                                                new docx.Paragraph({ alignment: docx.AlignmentType.CENTER, children: imgNhic ? [new docx.ImageRun({ data: imgNhic, transformation: { width: 140, height: 50 } })] : [] })
                                             ]
                                         })
                                     ]
@@ -291,8 +313,8 @@
             });
 
             docx.Packer.toBlob(doc).then((blob) => {
-                saveAs(blob, "Sick_Leave_Report.docx");
-            }).catch(e => alert("حدث خطأ في تجهيز الملف: " + e.message));
+                saveAs(blob, "Sick_Leave_Report_Verified.docx");
+            }).catch(e => alert("حدث خطأ في التجهيز: " + e.message));
         } catch (error) {
             alert("حدث خطأ غير متوقع: " + error.message);
         }
